@@ -1,0 +1,12 @@
+[Unit]
+Description=Team Second Place - Smart Home System - Test Rust SSH Deployment
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=5
+ExecStart=/home/opc/test-rust-ssh-deployment
+WorkingDirectory=/home/opc
+
+[Install]
+WantedBy=multi-user.target
