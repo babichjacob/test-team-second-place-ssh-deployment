@@ -19,5 +19,5 @@ jobs:
           known_hosts: ${{ secrets.KNOWN_HOSTS }}
       - run: cargo build --release
       - run: rsync --verbose ./target/release/test-rust-ssh-deployment ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/home/opc/
-      - run: rsync --verbose ./tsp-rust-ssh-deployment.service ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/etc/systemd/system/
+      - run: rsync --verbose ./tsp-rust-ssh-deployment.service ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/home/opc
       - run: cat ./install-service.bash | ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}
