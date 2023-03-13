@@ -20,6 +20,6 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           known_hosts: ${{ secrets.KNOWN_HOSTS }}
       - run: cargo build --release --target x86_64-unknown-linux-musl
-      - run: rsync --verbose ./target/release/test-rust-ssh-deployment ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/home/opc/
+      - run: rsync --verbose ./target/x86_64-unknown-linux-musl/release/test-rust-ssh-deployment ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/home/opc/
       - run: rsync --verbose ./tsp-rust-ssh-deployment.service ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/home/opc
       - run: cat ./install-service.bash | ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}
