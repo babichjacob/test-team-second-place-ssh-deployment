@@ -1,6 +1,6 @@
-sudo semanage fcontext -a -t bin_t '<<directory>>/<<binary>>'
-sudo restorecon -Fv <<directory>>/<<binary>>
-sudo cp ./systemd-deployment.service /etc/systemd/system/<<binary>>.service
+sudo semanage fcontext -a -t bin_t '$DEPLOYMENT_DIRECTORY/$BINARY'
+sudo restorecon -Fv $DEPLOYMENT_DIRECTORY/$BINARY
+sudo cp ./systemd-deployment.service /etc/systemd/system/$BINARY.service
 sudo systemctl daemon-reload
-sudo systemctl restart <<binary>>
-sudo systemctl enable <<binary>>
+sudo systemctl restart $BINARY
+sudo systemctl enable $BINARY

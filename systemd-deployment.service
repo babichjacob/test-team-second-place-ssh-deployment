@@ -5,9 +5,9 @@ Description=Team Second Place - Smart Home System - Test Rust SSH Deployment
 Type=simple
 Restart=always
 RestartSec=5
-ExecStart=<<directory>>/<<binary>>
-WorkingDirectory=<<directory>>
-Environment=PORT=<<port>>
+ExecStart=$DEPLOYMENT_DIRECTORY/$BINARY_NAME
+WorkingDirectory=$DEPLOYMENT_DIRECTORY
+Environment=PORT=$PORT
 
 [Install]
 WantedBy=multi-user.target
