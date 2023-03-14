@@ -27,6 +27,7 @@ use axum::{
 };
 
 use std::borrow::Cow;
+use std::env;
 use std::net::SocketAddr;
 use std::ops::ControlFlow;
 use tower_http::trace::{DefaultMakeSpan, TraceLayer};
@@ -59,8 +60,11 @@ async fn main() {
                 .make_span_with(DefaultMakeSpan::default().include_headers(true)),
         );
 
+    let port = env::var("PORT").unwrap();
+    let port = port.parse::<u16>().unwrap();
+
     // run it with hyper
-    let addr = SocketAddr::from(([127, 0, 0, 1], 7658));
+    let addr = SocketAddr::from(([127, 0, 0, 1], port));
     tracing::debug!("listening on {}", addr);
     axum::Server::bind(&addr)
         .serve(app.into_make_service_with_connect_info::<SocketAddr>())
