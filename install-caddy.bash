@@ -1,5 +1,5 @@
 sudo dnf update -y
-sudo dnf install --y 'dnf-command(copr)'
+sudo dnf install -y 'dnf-command(copr)'
 sudo dnf copr enable -y @caddy/caddy
 sudo dnf install -y caddy
 
