@@ -27,5 +27,5 @@ jobs:
       - uses: taiki-e/install-action@v2
         with:
           tool: cargo-binstall
-      - run: cargo binstall --no-confirm cargo-nextest
+      - run: cargo binstall --no-confirm --force cargo-nextest
       - run: cargo nextest run --all-features
