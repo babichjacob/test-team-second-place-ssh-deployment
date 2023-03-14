@@ -1,4 +1,4 @@
-name: Deploy
+name: Build and deploy
 
 on:
   push:
@@ -8,18 +8,36 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v3
       - uses: dtolnay/rust-toolchain@stable
         with:
-          targets: "x86_64-unknown-linux-musl"
+          targets: ${{ vars.RUST_TARGET }}
       - uses: Swatinem/rust-cache@v2
+      
       - uses: shimataro/ssh-key-action@v2
         with:
           key: ${{ secrets.SSH_KEY }}
           known_hosts: ${{ secrets.KNOWN_HOSTS }}
-      - run: cargo build --release --target x86_64-unknown-linux-musl
-      - run: rsync --verbose ./target/x86_64-unknown-linux-musl/release/test-rust-ssh-deployment ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/home/opc/
-      - run: rsync --verbose ./tsp-rust-ssh-deployment.service ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/home/opc
+      
+      - run: cargo build --release --target ${{ vars.RUST_TARGET }}
+      - run: rsync --verbose ./target/${{ vars.RUST_TARGET }}/release/${{ vars.BINARY_NAME }} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.DEPLOYMENT_DIRECTORY }}/
+      
+      - run: sed -i "s/<<directory>>/${{ secrets.DEPLOYMENT_DIRECTORY }}/g" ./systemd-deployment.service
+      - run: sed -i "s/<<binary>>/${{ vars.BINARY_NAME }}/g" ./systemd-deployment.service
+      - run: sed -i "s/<<port>>/${{ vars.PORT }}/g" ./systemd-deployment.service
+      - run: rsync --verbose ./systemd-deployment.service ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.DEPLOYMENT_DIRECTORY }}/
+      
+      - run: sed -i "s/<<directory>>/${{ secrets.DEPLOYMENT_DIRECTORY }}/g" ./install-service.bash
+      - run: sed -i "s/<<binary>>/${{ vars.BINARY_NAME }}/g" ./install-service.bash
       - run: cat ./install-service.bash | ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}
+
+      - run: cat ./install-caddy.bash | ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}
+
+      - run: sed -i "s/<<ssh_host>>/${{ secrets.SSH_HOST }}/g" ./Caddyfile
+      - run: sed -i "s/<<port>>/${{ vars.PORT }}/g" ./Caddyfile
+      - run: rsync --verbose ./Caddyfile ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.DEPLOYMENT_DIRECTORY }}/
+
+      - run: cat ./setup-caddy.bash | ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}
+

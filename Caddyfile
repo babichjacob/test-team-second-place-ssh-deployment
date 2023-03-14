@@ -1,0 +1,3 @@
+https://<<ssh_host>>.nip.io {
+    reverse_proxy :<<port>>
+}

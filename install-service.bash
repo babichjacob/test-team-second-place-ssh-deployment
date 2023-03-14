@@ -1,6 +1,6 @@
-sudo semanage fcontext -a -t bin_t '/home/opc/test-rust-ssh-deployment'
-sudo restorecon -Fv /home/opc/test-rust-ssh-deployment
-sudo cp ./tsp-rust-ssh-deployment.service /etc/systemd/system/tsp-rust-ssh-deployment.service
+sudo semanage fcontext -a -t bin_t '<<directory>>/<<binary>>'
+sudo restorecon -Fv <<directory>>/<<binary>>
+sudo cp ./systemd-deployment.service /etc/systemd/system/<<binary>>.service
 sudo systemctl daemon-reload
-sudo systemctl restart tsp-rust-ssh-deployment
-sudo systemctl enable tsp-rust-ssh-deployment
+sudo systemctl restart <<binary>>
+sudo systemctl enable <<binary>>
